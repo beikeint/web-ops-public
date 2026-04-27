@@ -74,6 +74,30 @@ Step 3: 标记本月工作完成
 | 问题与建议 | 每个可执行 | seo-checker + search-analytics |
 | 下月计划 | 内容+技术+SEO | content-tracker.suggest_content |
 | 附录 | 竞品简报 | competitor-monitor 输出 |
+| **ROI 投入产出表**（v9.4 新增） | 月费 vs 增量流量 vs 询盘 vs 已成单价值 | client-manager + GA4 + 询盘记录 |
+
+### ROI 投入产出表格式（江阴老板要看的"花 N 千值不值"）
+
+```markdown
+## 本月 ROI 投入产出
+
+| 维度 | 数值 | 计算 |
+|---|---|---|
+| 客户运营月费 | ¥{x}/月 | client-manager 合同 |
+| 本月增量自然流量 | {y} 会话 | GA4 本月 - 上月 |
+| 流量单价(CPV) | ¥{x/y} | 月费 ÷ 增量流量 |
+| 本月新增询盘 | {n} 条 | GA4 generate_lead 事件 + WhatsApp/email 记录 |
+| 询盘转化率 | {p}% | 询盘 ÷ 流量 |
+| 已成单价值(本月) | ¥{v} | client-manager 时间线"成单"事件 |
+| 归因 ROI | {v÷月费}× | 已成单价值 ÷ 月费 |
+| 累计成单价值(YTD) | ¥{V} | 接客户起到本月 |
+| 累计 ROI | {V÷已付月费}× | YTD 价值 ÷ 累计月费 |
+```
+
+**写月报时硬规则**：
+- ROI < 1 月份要解释（前 3 个月 SEO 周期正常,但写明"为什么不慌"）
+- ROI ≥ 3 主动续约谈起 → 引用累计 ROI 表
+- 已成单**只算可归因到自然流量/SEO**的（朋友圈直接来的不算 SEO ROI,要分开记）
 
 ### 首月特殊格式
 

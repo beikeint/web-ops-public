@@ -1,4 +1,4 @@
-# 独立站建站智能体·网站运营-web-ops v9.3
+# 独立站建站智能体·网站运营-web-ops v10
 
 ---
 > 🎯 **首次激活时必读(对客户场景生效,内部使用可忽略)**
@@ -16,8 +16,57 @@
 ---
 
 
-> 版本：v9.3 | 2026年4月20日  
-> 架构：每日三步走（巡检7+1项+增长7维度+客户简报） | 21个运营技能+9个建站交接技能 | 14个MCP（9活跃+5待激活） | GSC+GA4全自动 | 模型分层省token | P0+P5+P7+P9 全栈能力已落地
+> 版本：**v10** | 2026-04-26 (v9.4 → v10 天花板改造：6 大能力域 + 4 新 skill + 数据基础设施修复 + 强制激活节奏)
+> 架构：每日三步走（巡检7+1项+增长7维度+客户简报） | **24 个运营技能（21 实战 + 3 归档 _archive/）+ 4 v10 新增天花板 skill** + 9 建站交接技能 | 14个MCP（9活跃+5待激活） | GSC+GA4全自动 | 模型分层省token | P0+P5+P7+P9 全栈能力已落地 | 内部脚本：visual-verify.mjs / pending-snapshot.mjs / **pm2-health-monitor.sh（v10 新增，每小时巡检 cron 守护）** / 案例库 client-B.md + **client-D-demo-b.md（v10 新增，展示↑2360% 真案例）**
+
+## 🚀 v10 改造（2026-04-26）— 从纸面到天花板
+
+**触发原因**：运营人员质问"智能体到底有没有每天工作？还是只在出报告？" 经审计：
+
+✅ **真实战远超预期**：
+- daily-cron 已部署完整（含周一 CTR 引擎 / 周四 GEO 攻占 / 周日复盘）
+- 客户日报 / 竞品雷达 每天都有产出（在 `客户/<X>/website/docs/` 因 `.gitignore` 屏蔽看不到）
+- demo-b 4-22 多语种部署 → 4-25 GSC 展示 5→123（**+2360%** 🚀）
+
+❌ **3 大真缺口**：
+- pm2 daily-check 进程 stopped → daily-cron 实际间断（已修：v10 装 pm2-health-monitor 每小时自动重启 + 推企微告警）
+- 博客发布 30 天 = 0 篇（已修：content-production v10 加强制每周 ≥ 2 篇 + 周三 cron 提醒）
+- CRO / Digital PR / Schema 全套 / Attribution 深度 — 真空白（已修：v10 新增 4 个天花板 skill）
+
+🎯 **6 大能力域 + 成熟度评分**（v10 起点 → 1 个月目标）：
+
+| 能力域 | 对标顶级 | 起点 | 目标 |
+|---|---|---|---|
+| Technical SEO | Lily Ray / Aleyda Solis | 75/100 | 85/100 |
+| Content Strategy | Brian Dean / Eli Schwartz | 40/100（博客 0 篇） | 70/100 |
+| Link Building / Digital PR | Stewart Dunlop | 10/100 | 35/100 |
+| **CRO（v10 新增）** | Peep Laja / CXL | 40/100 | 70/100 |
+| Analytics 深度 | Avinash Kaushik | 35/100 | 65/100 |
+| AI/GEO（含 P9） | 2026 新方向 | 60/100 | 80/100 |
+
+**v10 新增 4 skill**（基于 2026 顶级方法论 + WebSearch 验证）：
+- [cro-suite](.claude/skills/cro-suite.md) — CRO 转化率优化套件（heatmap/A/B/funnel/form/exit-intent）
+- [digital-pr](.claude/skills/digital-pr.md) — Digital PR 现代外链（HARO 2025 重启版/Qwoted/Featured/品牌实体建设）
+- [schema-library](.claude/skills/schema-library.md) — 12 类 Schema 完整库（Article/Product/FAQ/HowTo/VideoObject 等）
+- [attribution-analytics](.claude/skills/attribution-analytics.md) — 深度归因（server-side/cohort/DDA/Looker Studio）
+
+**v10 强制激活节奏**：
+- 每客户每周 ≥ 2 篇博客（content-production，过去 30 天 0 篇问题）
+- HARO/Qwoted 每天响应 5-10 条（digital-pr）
+- 月度 Looker Studio dashboard 更新（attribution-analytics）
+- pm2-health-monitor 每小时自检 daily-check / social-daily-check 进程，stopped 自动重启 + 推企微
+
+**v10 归档 3 个真冗余 skill**（→ `_archive/skills/`）：
+- daily-growth → 合并入 daily-ops
+- data-analysis → 合并入 analytics-api
+- visual-upgrade-v2 → 移交建站智能体（不属于运营范围）
+
+**v10 反膨胀原则**：
+- 任何新增能力必须有"激活节奏"+"成熟度评分"+"实战数据来源"
+- skill 月触发频次 0 → 标记为"待激活"或归档
+- CLAUDE.md 数字必须与实际文件一致（v9 之前漂移过：23 skill 写过实际 22 个）
+
+详见：[案例库/client-D-demo-b.md](案例库/client-D-demo-b.md) / [scripts/pm2-health-monitor.sh](scripts/pm2-health-monitor.sh)
 > v9.3升级（2026-04-20 · 强化第一+第二波完成）：**P5 CTR 优化引擎落地**（数据驱动识别高排名低CTR机会页+批量重写Title/Desc+7天复盘环）；**P7 内容加速引擎落地**（竞品雷达每日扫+选题池周一聚合+3阶段 rapid-response 技能，月产从1-2篇→4篇）；**P9 GEO 攻防系统落地**（4 种 AI 搜索信号强化+geo-opportunities 扫描器+geo-attack 技能，AI referral 从 0 攻占到每周 3-5 次）；GSC service account 权限彻查（demo-a/demo-b 升 Full User 后 sitemap submit 全通）；新增"精简/删页面前必查 GSC"双智能体规则（建站+运营）；新增 daily-ops Step 3c「GSC 展示>0 但线上 404」交叉检查（每周一跑）；14条 memory 沉淀（比 v9.2 多 6 条，含自主行动授权/Full User 升级规则/API 调试原则/pre-delete GSC 检查/精简教训等）；等运营人员完成 email MCP + Microsoft Clarity 两件手动操作（10分钟）即可激活 P6+P8
 > v9.2升级：修复pm2自主巡检（stderr捕获+部分结果容错）；修复deployer MCP密码作用域bug；建立memory持久化记忆系统（6个记忆文件）；完善竞品扫描MCP调用链；新增MCP扩展路线图（email/linkedin/calendar/apollo/wechat 5个MCP激活计划）
 > v9.1升级：补全P0-P4实战能力（GA4转化追踪/IndexNow索引加速/智能选题/ROI计算器/自主巡检+企微推送）；修正技能清单和阶段数；强化自我进化机制（文档同步规则）
@@ -117,7 +166,7 @@
 | **client-manager** | 客户信息 CRUD | `list_clients` `get_client` `search_clients` `update_client` `add_timeline` |
 | **seo-checker** | SEO 检测 | `check_seo` `check_pagespeed` `check_structured_data` `batch_check` |
 | **site-monitor** | 可用性监控 | `check_site` `check_all_sites` `check_ssl_expiry` `check_subdomains` |
-| **search-analytics** | GSC+GA4搜索与流量数据 | GSC: `gsc_index_status` `gsc_index_changes` `gsc_search_performance` `gsc_ranking_changes` `gsc_crawl_errors` `gsc_submit_sitemap` / GA4: `ga4_traffic_summary` `ga4_traffic_sources` `ga4_page_performance` `ga4_conversions` |
+| **search-analytics** | GSC+GA4搜索与流量数据 | GSC: `gsc_index_status` `gsc_index_changes` `gsc_search_performance` `gsc_ranking_changes` `gsc_crawl_errors` `gsc_submit_sitemap` `gsc_cannibalisation`(同站互争) `gsc_content_decay`(内容衰退) / GA4: `ga4_traffic_summary` `ga4_traffic_sources` `ga4_page_performance` `ga4_conversions` |
 | **content-tracker** | 内容管理 | `add_content` `list_content` `update_content` `content_summary` `suggest_content` |
 | **deployer** | 一键部署 | `deploy` `deploy_status` `list_deployable` |
 | **fetch** | 抓取外部页面 | `fetch(url)` |
@@ -410,7 +459,9 @@ Day 25     ⏸️ 月报确认+发送
 
 ## 六、技能文件
 
-### 运营技能（21个，位于本智能体 `.claude/skills/`）
+### 运营技能（23个，位于本智能体 `.claude/skills/`）
+
+**v9.4 新增**：[bulk-audit](.claude/skills/bulk-audit.md) — 全站批量体检（unlighthouse-ci + Addy Osmani 5 维度框架，月度跑给客户老板看 ROI 表）
 
 ```
 .claude/skills/
@@ -424,6 +475,7 @@ Day 25     ⏸️ 月报确认+发送
 ├── ctr-optimization.md      ← P5 CTR 优化引擎（数据驱动机会页识别+Title/Desc 重写+7天复盘环）
 ├── content-rapid-response.md ← P7 3 阶段内容快速生产（竞品48h响应 + GSC Gap 补位，每月2-3篇）
 ├── geo-attack.md            ← P9 GEO 主动攻占（4种信号：答案胶囊/FAQ/权威外链/定义语，抢 AI 搜索引用）
+├── visual-upgrade-v2.md     ← 客户站 v1→v2 视觉升级 SOP（7 件套餐+30min 工作流+7 大踩坑预警，2026-04-25 客户 002 实战沉淀）
 ├── content-refresh.md       ← 内容衰退检测+更新策略+评分体系
 ├── topic-cluster.md         ← 内容集群路线图（支柱页+子文章+内链矩阵）
 ├── analytics-api.md         ← GA4/GSC数据自动拉取（含临时CSV方案）
@@ -436,6 +488,26 @@ Day 25     ⏸️ 月报确认+发送
 ├── monthly-report.md        ← 月报生成与发送
 ├── quarterly-review.md      ← 季度深度复盘（ROI+策略调整+下季度规划）
 ```
+
+### 内部脚本（位于本智能体 `scripts/`，自检与协调）
+
+```
+scripts/
+├── visual-verify.mjs        ← 跨客户站 v2 视觉验收脚本（4 profile：v2-full / v2-card / v2-cta / inquiry，30 秒判断"线上是否已是预期版本"）
+├── pending-snapshot.mjs     ← 跨 6 客户待办聚合（markdown 表格 parser + --due-today / --owner 过滤）
+└── gsc-check.py             ← GSC service account 验证脚本（旧）
+
+案例库/
+├── README.md                ← 案例库说明
+└── client-B.md            ← 双站客户 002（demo-c + demo-a）运营视角案例（双站对比表+决策路径+8 条给继任建议）
+```
+
+**触发场景**：
+
+- 客户截图反馈"看不出区别" → `node scripts/visual-verify.mjs <url>` 30 秒辨别"缓存 vs 真没生效"
+- 运营人员问"还有什么没做" → `node scripts/pending-snapshot.mjs --due-today` 一键看今日到期
+- 接手新客户老站升级 → 走 `.claude/skills/visual-upgrade-v2.md` SOP（30 min 工作流）
+- daily-cron 每日自动跑这两脚本 + 把"视觉一致性"和"今日到期/逾期"加入企微简报
 
 ### 建站+交接技能（9个，位于全局 `ai-studio/.claude/skills/`，建站和运营智能体共享）
 
@@ -508,4 +580,4 @@ ai-studio/.claude/skills/
 ---
 
 *独立站建站智能体 · 不卖工具，交付结果*  
-*v9.3 · 21运营+9建站交接技能 · 14个MCP（9活跃+5路线图） · P0+P5+P7+P9全栈能力 · GSC+GA4全自动 · QA 15项必检 · 巡检7+1项（Step 3c 新增 GSC-404 交叉检查）· 每日三步走 · 12+3阶段内容生产 · 竞品雷达+选题池 · GEO 攻防系统 · 自主巡检+企微推送 · CTR 优化引擎 · memory持久化（6条） · 模型分层 · 闭环修复+文档同步 | 2026年4月24日*
+*v9.3 · 22运营+9建站交接技能 · 14个MCP（9活跃+5路线图） · 内部脚本 visual-verify+pending-snapshot · 案例库 client-B · P0+P5+P7+P9全栈能力 · GSC+GA4全自动 · QA 15项必检 · 巡检7+1项（Step 3c GSC-404 + Step 5/6 视觉自检/今日到期）· 每日三步走 · 12+3阶段内容生产 · 竞品雷达+选题池 · GEO 攻防系统 · 自主巡检+企微推送 · CTR 优化引擎 · memory持久化（10条） · 模型分层 · 闭环修复+文档同步 | 2026年4月25日*
