@@ -368,7 +368,7 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 **v10.2 batch6 性能 + 学习曲线（2026-04-27）**：
 
 - **daily-cron 4 客户并行** — Promise.all 替代串行 for, 实测 53 min → 14:17 min（加速 3.7 倍 ✅）。`--serial` 参数兼容回退（API 限额触发可降级）
-- **客户日报 quality gate** ([scripts/briefing-quality-scorer.mjs](scripts/briefing-quality-scorer.mjs) + [.claude/skills/quality-and-learning.md](.claude/skills/quality-and-learning.md)) — 4 维度评分（数据完整 / 行动可执行 / 客户语言 / 排期），daily-cron 推送时自动给每客户卡片附"客户日报质量 X/100 ✅/⚠️/🔴"。实测 4-27: demo-c 63 / demo-b 63 / demo-a 43 / hearingprotect 80
+- **客户日报 quality gate** ([scripts/briefing-quality-scorer.mjs](scripts/briefing-quality-scorer.mjs) + [.claude/skills/quality-and-learning.md](.claude/skills/quality-and-learning.md)) — 4 维度评分（数据完整 / 行动可执行 / 客户语言 / 排期），daily-cron 推送时自动给每客户卡片附"客户日报质量 X/100 ✅/⚠️/🔴"。实测 4-27: demo-c 63 / demo-b 63 / demo-a 43 / demo-a 80
 - **case-study 月度归集器** ([scripts/case-study-collector.mjs](scripts/case-study-collector.mjs)) — pm2 进程 `case-study-monthly` cron `0 1 1 * *`（每月 1 号 09:00 北京）。归集 4 客户 git log → 7 类分组（博客/内链/CTR/Schema-GEO/hotfix/refresh/其他）→ 案例库/月度归集/`YYYY-MM.md`。4 月首跑: 170 commits / 真 A 级 13 个 (7.6%)
 
 **v10.2 batch7 真天花板补漏（2026-04-27）**：
@@ -458,7 +458,7 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 
 | 客户ID | 客户名 | 域名 | 技术栈 | 状态 |
 |---|---|---|---|---|
-| client-A | Demo-D | hearingprotect.com | astro | 🟢 active（4-27 域名搬迁后启动运营） |
+| client-A | Demo-D | demo-a.com | astro | 🟢 active（4-27 域名搬迁后启动运营） |
 | client-A-eastragonltd | Demo-DEASTRAGON老站 | eastragonltd.com | **wordpress** | 🟢 active（2026-04-30 接入 · 走 wp-site-ops 轻巡检） |
 | client-B | Demo-C | demo-c.com | astro | 🟢 active（双站 a） |
 | client-B2 | Demo-A | demo-a.com | astro | 🟢 active（双站 b） |
@@ -475,7 +475,7 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 
 - ❌ **client-C Demo-E** — 暂未上线运营（4-4 后停摆，等客户决定下一步）
 - ❌ **client-E** — 待确认归属
-- ❌ **client-F 玄承** — 归 **跨境B2C-b2c-ops** 智能体管，web-ops 不掺和
+- ❌ **client-F Demo-F** — 归 **跨境B2C-b2c-ops** 智能体管，web-ops 不掺和
 
 **硬规则**：
 - daily-cron.mjs 的 `WEB_OPS_CLIENTS` 数组与本表**强一致**（一处改两处同步）

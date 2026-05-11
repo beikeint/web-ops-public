@@ -37,7 +37,7 @@ const CLIENT_DIRS = {
 };
 
 const CLIENT_DOMAINS = {
-  'client-A':    'hearingprotect.com',
+  'client-A':    'demo-a.com',
   'client-B':    'demo-c.com',
   'client-B2':   'demo-a.com',
   'client-D':    'demo-b.com',

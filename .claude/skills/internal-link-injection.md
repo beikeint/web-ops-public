@@ -28,7 +28,7 @@ node scripts/internal-link-injector.mjs <client-id> --rules /path/rules.json
 ```
 
 `<client-id>` 接受两种形式:
-- 短名: `demo-c` / `demo-a` / `demo-b` / `hearingprotect`
+- 短名: `demo-c` / `demo-a` / `demo-b` / `demo-a`
 - client-id: `client-A` / `client-B` / `client-B2` / `client-D`
 
 ## 规则文件格式

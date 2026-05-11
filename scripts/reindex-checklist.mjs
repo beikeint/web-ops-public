@@ -44,7 +44,7 @@ const __dirname = dirname(__filename);
 // ============================================================
 export const WEB_OPS_CLIENTS = [
   {
-    id: 'client-A',  name: 'Demo-D',   domain: 'hearingprotect.com',
+    id: 'client-A',  name: 'Demo-D',   domain: 'demo-a.com',
     repoPath: '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
     websitePath: 'website',
   },

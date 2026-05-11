@@ -27,7 +27,7 @@ export function loadStdEnv() {
 }
 
 export const WEB_OPS_CLIENTS = [
-  { id: 'client-A',  name: 'Demo-D',    domain: 'hearingprotect.com', repoPath: '${WORKSPACE_ROOT}/客户/Demo-D-client-A' },
+  { id: 'client-A',  name: 'Demo-D',    domain: 'demo-a.com', repoPath: '${WORKSPACE_ROOT}/客户/Demo-D-client-A' },
   { id: 'client-B',  name: 'Demo-C',   domain: 'demo-c.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-C-client-B' },
   { id: 'client-B2', name: 'Demo-A',  domain: 'demo-a.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-A-client-B2' },
   { id: 'client-D',  name: 'Demo-B',    domain: 'demo-b.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-B-client-D' },

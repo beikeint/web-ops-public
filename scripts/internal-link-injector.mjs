@@ -9,7 +9,7 @@
  *
  * 用法：
  *   node internal-link-injector.mjs <client-site-id> [--dry-run] [--rules <path>]
- *   client-site-id: demo-c / demo-a / demo-b / hearingprotect
+ *   client-site-id: demo-c / demo-a / demo-b / demo-a
  *
  * 默认规则文件：客户/<X>/website/docs/internal-link-rules.json
  *
@@ -37,7 +37,7 @@ const CLIENT_PATHS = {
   'client-B2':   '${WORKSPACE_ROOT}/客户/Demo-A-client-B2',
   demo-b:        '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
   'client-D':    '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
-  hearingprotect:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
+  demo-a:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
   'client-A':    '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
 };
 
@@ -51,7 +51,7 @@ const customRulesIdx = args.indexOf('--rules');
 const customRulesPath = customRulesIdx >= 0 ? args[customRulesIdx + 1] : null;
 
 if (!clientId || !CLIENT_PATHS[clientId]) {
-  console.error('用法: node internal-link-injector.mjs <demo-c|demo-a|demo-b|hearingprotect> [--dry-run] [--rules path]');
+  console.error('用法: node internal-link-injector.mjs <demo-c|demo-a|demo-b|demo-a> [--dry-run] [--rules path]');
   process.exit(1);
 }
 

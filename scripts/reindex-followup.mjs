@@ -49,7 +49,7 @@ const KEY_FILE = '${GSC_CONFIG_PATH}/example-seo.json';
 const GSC_SITE_OVERRIDES = {
   'demo-b.com': 'https://demo-b.com/',
   'demo-a.com': 'https://demo-a.com/',
-  'hearingprotect.com': 'https://hearingprotect.com/',
+  'demo-a.com': 'https://demo-a.com/',
 };
 function gscSiteUrl(domain) {
   return GSC_SITE_OVERRIDES[domain] || `sc-domain:${domain}`;

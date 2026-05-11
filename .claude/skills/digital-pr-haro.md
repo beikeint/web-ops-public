@@ -80,7 +80,7 @@ node scripts/haro-draft-generator.mjs \
 2. 按客户行业关键词过滤 (demo-c: EPS/EPP/foam/packaging machinery
                        demo-b: adhesive/glue/PVA/epoxy/wood/fire-rated
                        demo-a: refrigerator/cold chain/PU foam/insulation
-                       hearingprotect: earplug/hearing protection/PPE/EN 352)
+                       demo-a: earplug/hearing protection/PPE/EN 352)
 3. 每条匹配的征集 → 跑 haro-draft-generator.mjs --client X --query "..."
 4. 草稿审 (智能体或运营人员)
 5. 平台提交 (注意截止时间, 大多 24h 内)
@@ -93,7 +93,7 @@ node scripts/haro-draft-generator.mjs \
 - demo-c: ❌ 待创建 (建议: EPS Industry Alliance 数据 / 工厂 50-1000 吨/月 / 出口 50+ 国 / ISO 9001)
 - demo-b: ❌ 待创建 (建议: PVA glue 价格 ¥X-Y/吨 / 防火胶认证 UL10C/EN 1634-1 / 工厂 ...)
 - demo-a: ❌ 待创建 (建议: K-factor 数据 / 冷链产线 ... / 13 solutions)
-- hearingprotect: ❌ 待创建 (建议: EN 352-1/2 认证 / 30-35 dB SNR / 出口 ... 国)
+- demo-a: ❌ 待创建 (建议: EN 352-1/2 认证 / 30-35 dB SNR / 出口 ... 国)
 
 ## 阻塞 + 解决路径
 

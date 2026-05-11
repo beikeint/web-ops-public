@@ -8,7 +8,7 @@
 set -euo pipefail
 
 CLIENTS=(
-  "客户/Demo-D-client-A:hearingprotect.com"
+  "客户/Demo-D-client-A:demo-a.com"
   "客户/Demo-C-client-B:demo-c.com"
   "客户/Demo-A-client-B2:demo-a.com"
   "客户/Demo-B-client-D:demo-b.com"

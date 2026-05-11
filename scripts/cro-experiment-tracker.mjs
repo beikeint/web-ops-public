@@ -31,7 +31,7 @@ const CLIENT_DIRS = {
   'client-B2':   '${WORKSPACE_ROOT}/客户/Demo-A-client-B2',
   demo-b:        '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
   'client-D':    '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
-  hearingprotect:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
+  demo-a:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
   'client-A':    '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
 };
 

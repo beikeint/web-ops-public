@@ -99,7 +99,7 @@ A：不能。Google 越来越判定"持续真实创作"vs"老资源反复用"。
 
 ## 4 客户实际派发版本（运营人员本月 5/8 转发）
 
-### 派发 1：Demo-D hearingprotect.com
+### 派发 1：Demo-D demo-a.com
 
 填空：
 - {{客户公司名}} = Demo-D（EASTRAGON）

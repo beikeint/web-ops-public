@@ -22,7 +22,7 @@ import { join } from 'path';
 const WEB_OPS_ROOT = '${WORKSPACE_ROOT}/智能体/运营/网站运营-web-ops';
 
 const CLIENTS = [
-  { id: 'client-A',  name: 'Demo-D', domain: 'hearingprotect.com', phase: 'fermenting', launchDate: '2026-04-26' },
+  { id: 'client-A',  name: 'Demo-D', domain: 'demo-a.com', phase: 'fermenting', launchDate: '2026-04-26' },
   { id: 'client-B',  name: 'Demo-C', domain: 'demo-c.com', phase: 'mature' },
   { id: 'client-B2', name: 'Demo-A', domain: 'demo-a.com', phase: 'fermenting', launchDate: '2026-04-19' },
   { id: 'client-D',  name: 'Demo-B', domain: 'demo-b.com', phase: 'mature' },

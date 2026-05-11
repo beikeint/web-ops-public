@@ -42,7 +42,7 @@ const REPORT_DIR = '${WORKSPACE_ROOT}/智能体/运营/网站运营-web-ops/repo
 // 管辖客户 (与 daily-cron.mjs WEB_OPS_CLIENTS 对齐 — 真在运营的 Astro 站)
 // ============================================================
 const CLIENTS = [
-  { id: 'client-A',  name: 'Demo-D',    domain: 'hearingprotect.com', repoPath: '${WORKSPACE_ROOT}/客户/Demo-D-client-A',     phase: 'fermenting' },
+  { id: 'client-A',  name: 'Demo-D',    domain: 'demo-a.com', repoPath: '${WORKSPACE_ROOT}/客户/Demo-D-client-A',     phase: 'fermenting' },
   { id: 'client-B',  name: 'Demo-C',   domain: 'demo-c.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-C-client-B',     phase: 'mature' },
   { id: 'client-B2', name: 'Demo-A',  domain: 'demo-a.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-A-client-B2',  phase: 'fermenting' },
   { id: 'client-D',  name: 'Demo-B',    domain: 'demo-b.com',       repoPath: '${WORKSPACE_ROOT}/客户/Demo-B-client-D',     phase: 'mature' },

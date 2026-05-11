@@ -28,7 +28,7 @@ const CLIENT_DIRS = {
   'client-B2':   '${WORKSPACE_ROOT}/客户/Demo-A-client-B2',
   demo-b:        '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
   'client-D':    '${WORKSPACE_ROOT}/客户/Demo-B-client-D',
-  hearingprotect:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
+  demo-a:  '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
   'client-A':    '${WORKSPACE_ROOT}/客户/Demo-D-client-A',
 };
 
@@ -40,7 +40,7 @@ const ARGS = {
 };
 
 if (!ARGS.client || !ARGS.query) {
-  console.error('用法: node haro-draft-generator.mjs --client <demo-c|demo-b|demo-a|hearingprotect> --query "<征集主题>"');
+  console.error('用法: node haro-draft-generator.mjs --client <demo-c|demo-b|demo-a|demo-a> --query "<征集主题>"');
   console.error('示例: node haro-draft-generator.mjs --client demo-c --query "Looking for EPS machine experts to comment on China sourcing trends 2026"');
   process.exit(1);
 }
