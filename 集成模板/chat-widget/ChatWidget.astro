@@ -1,0 +1,107 @@
+---
+/**
+ * ChatWidget · 通用 Live Chat 组件 (web-ops v10.1)
+ *
+ * 支持多后端：Crisp / Tawk.to / Hermes (企微长连接，仅内部用) / Custom
+ * 根据 site.config.ts 的 chatWidget.provider 自动选用对应后端的 SDK
+ *
+ * 使用方式（site.config.ts）：
+ * features: {
+ *   chatWidget: true,
+ * },
+ * chatWidget: {
+ *   provider: 'crisp',           // 'crisp' | 'tawk' | 'hermes' | 'custom'
+ *   crispWebsiteId: 'xxx',        // Crisp 用
+ *   tawkPropertyId: 'xxx',        // Tawk.to 用
+ *   tawkWidgetId: 'xxx',
+ *   customScript: '<!-- ... -->', // 自定义脚本（兜底）
+ *   primaryColor: '#0066ff',
+ *   greeting: 'Hi! Need help with our products?',
+ *   businessHours: '09:00-18:00 GMT+8',  // 仅显示用，实际 24/7 AI 接管
+ * }
+ *
+ * 注意:
+ * - Hermes 是企微长连接 bot,**不适合**做面向访客的 web Live Chat,
+ *   仅在客户员工内部场景用。详见 [hermes-via-wecom skill](../../.claude/skills/hermes-via-wecom.md)
+ * - 推荐 Crisp（永久免费 2 seats，最适合中小客户站）
+ * - Tawk.to 完全免费但需带其 logo
+ *
+ * 集成方式：
+ * 1. 复制本文件到 src/components/interactive/ChatWidget.astro
+ * 2. 在 BaseLayout.astro 加：
+ *    import ChatWidget from '../components/interactive/ChatWidget.astro';
+ *    {config.features.chatWidget && <ChatWidget />}
+ * 3. 在 site.config.ts 配 features.chatWidget = true 和 chatWidget 节
+ */
+import config from '../../config/site.config';
+
+const provider = config.chatWidget?.provider || 'crisp';
+const crispWebsiteId = config.chatWidget?.crispWebsiteId;
+const tawkPropertyId = config.chatWidget?.tawkPropertyId;
+const tawkWidgetId = config.chatWidget?.tawkWidgetId;
+const customScript = config.chatWidget?.customScript;
+---
+
+{provider === 'crisp' && crispWebsiteId && (
+  <script is:inline define:vars={{ crispWebsiteId }}>
+    /* Crisp Chat — Free 2 seats */
+    window.$crisp = [];
+    window.CRISP_WEBSITE_ID = crispWebsiteId;
+    (function() {
+      const d = document;
+      const s = d.createElement('script');
+      s.src = 'https://client.crisp.chat/l.js';
+      s.async = 1;
+      d.getElementsByTagName('head')[0].appendChild(s);
+    })();
+
+    /* GA4 集成: chat 事件 → generate_lead */
+    document.addEventListener('crisp:on:message:received', () => {
+      window.gtag && window.gtag('event', 'chat_message_received', {
+        event_category: 'engagement',
+        chat_provider: 'crisp'
+      });
+    });
+    document.addEventListener('crisp:on:session:loaded', () => {
+      window.gtag && window.gtag('event', 'chat_session_started', {
+        event_category: 'engagement',
+        chat_provider: 'crisp'
+      });
+    });
+  </script>
+)}
+
+{provider === 'tawk' && tawkPropertyId && tawkWidgetId && (
+  <script is:inline define:vars={{ tawkPropertyId, tawkWidgetId }}>
+    /* Tawk.to — Free with logo */
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function() {
+      var s1 = document.createElement('script'), s0 = document.getElementsByTagName('script')[0];
+      s1.async = true;
+      s1.src = `https://embed.tawk.to/${tawkPropertyId}/${tawkWidgetId}`;
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+
+    /* GA4 集成 */
+    Tawk_API.onChatStarted = function() {
+      window.gtag && window.gtag('event', 'chat_session_started', {
+        event_category: 'engagement',
+        chat_provider: 'tawk'
+      });
+    };
+    Tawk_API.onMessageVisitor = function() {
+      window.gtag && window.gtag('event', 'chat_message_visitor', {
+        event_category: 'engagement',
+        chat_provider: 'tawk'
+      });
+    };
+  </script>
+)}
+
+{provider === 'custom' && customScript && (
+  <Fragment set:html={customScript} />
+)}
+
+{/* 注意: provider === 'hermes' 不在这里实现, Hermes 是企微 bot, 不嵌入 web 客户站 */}

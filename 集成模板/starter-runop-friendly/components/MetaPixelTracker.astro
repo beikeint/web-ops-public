@@ -1,0 +1,64 @@
+---
+/**
+ * MetaPixelTracker · Meta (Facebook) Pixel + Conversions API (web-ops v10.1 batch 7)
+ *
+ * 用途: Retargeting + Lookalike Audience
+ *
+ * 使用方式 (site.config.ts):
+ * features: { metaPixel: true },
+ * metaPixel: { pixelId: 'YOUR_PIXEL_ID' }
+ *
+ * 集成步骤:
+ * 1. 复制本文件到 src/components/interactive/MetaPixelTracker.astro
+ * 2. BaseLayout.astro <head> 加: {config.features.metaPixel && <MetaPixelTracker />}
+ * 3. site.config.ts 配 features.metaPixel + metaPixel.pixelId
+ *
+ * GA4 5 转化事件自动同步到 Pixel:
+ * - whatsapp_click → fbq('track', 'Contact')
+ * - email_click → fbq('track', 'Contact')
+ * - phone_click → fbq('track', 'Contact')
+ * - quote_click → fbq('track', 'Lead')
+ * - generate_lead → fbq('track', 'Lead')
+ *
+ * 隐私 (GDPR/CCPA):
+ * - 默认关闭"自动事件"(Advanced Matching),只触发 PageView 和手动事件
+ * - Cookie consent 后才开启完整追踪
+ */
+import config from '../../config/site.config';
+
+const enabled = config.features?.metaPixel;
+const pixelId = config.metaPixel?.pixelId;
+---
+
+{enabled && pixelId && (
+<>
+  <script is:inline define:vars={{ pixelId }}>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', pixelId);
+    fbq('track', 'PageView');
+
+    /* GA4 5 转化事件自动同步 Pixel */
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('a');
+      if (!target) return;
+      if (target.href.startsWith('https://wa.me/') || target.href.startsWith('https://api.whatsapp.com/')) {
+        fbq('track', 'Contact', { contact_method: 'whatsapp' });
+      } else if (target.href.startsWith('mailto:')) {
+        fbq('track', 'Contact', { contact_method: 'email' });
+      } else if (target.href.startsWith('tel:')) {
+        fbq('track', 'Contact', { contact_method: 'phone' });
+      }
+    });
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`} />
+  </noscript>
+</>
+)}

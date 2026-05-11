@@ -1,0 +1,213 @@
+---
+/**
+ * ExitIntentModal · 退出挽留弹窗 (web-ops v10.1 第四批)
+ *
+ * 触发条件:
+ * - 桌面: 鼠标移到顶部(关闭/地址栏方向)
+ * - 移动: scroll up 快速 + 离开 tab
+ *
+ * 内容(按 site.config.ts 配置):
+ * - 询盘磁铁: 免费报价 / 样品申请 / 行业报告 PDF
+ * - 优惠: 首单减 X% / 免运费
+ * - 挽留: 常见问题列表 / Live chat 主动邀请
+ *
+ * ⚠️ 不要乱用 — 每访客最多 1 次/30 天 (用 localStorage 跟踪)
+ *
+ * 使用方式 (site.config.ts):
+ * features: { exitIntent: true },
+ * exitIntent: {
+ *   variant: 'lead-magnet',  // 'lead-magnet' | 'discount' | 'live-chat-invite'
+ *   leadMagnetTitle: '🎁 Get Our Free Industry Report',
+ *   leadMagnetDesc: '20-page 2026 industry trends + 5 case studies',
+ *   leadMagnetCta: 'Download Free PDF',
+ *   leadMagnetUrl: '/resources/industry-report?utm_source=exit-intent',
+ *   coolDownDays: 30,  // 同访客 N 天内不再弹
+ * }
+ *
+ * 集成步骤:
+ * 1. 复制本文件到 src/components/interactive/
+ * 2. BaseLayout.astro 加: {config.features.exitIntent && <ExitIntentModal />}
+ * 3. site.config.ts 配 features.exitIntent + exitIntent 节
+ */
+import config from '../../config/site.config';
+
+const enabled = config.features?.exitIntent;
+const variant = config.exitIntent?.variant || 'lead-magnet';
+const title = config.exitIntent?.leadMagnetTitle || 'Wait! Get Our Free Resource';
+const desc = config.exitIntent?.leadMagnetDesc || 'Industry insights + case studies + actionable tips';
+const cta = config.exitIntent?.leadMagnetCta || 'Get It Now';
+const ctaUrl = config.exitIntent?.leadMagnetUrl || '/resources';
+const coolDownDays = config.exitIntent?.coolDownDays || 30;
+---
+
+{enabled && (
+<>
+<div id="exit-intent-modal" class="ei-overlay" hidden>
+  <div class="ei-modal" role="dialog" aria-labelledby="ei-title">
+    <button class="ei-close" aria-label="Close">×</button>
+
+    {variant === 'lead-magnet' && (
+      <>
+        <h2 id="ei-title">{title}</h2>
+        <p>{desc}</p>
+        <form id="ei-form" data-magnet="exit-intent">
+          <input
+            type="email"
+            name="email"
+            placeholder="Your work email"
+            required
+            autocomplete="email"
+          />
+          <button type="submit" class="ei-cta">
+            {cta}
+          </button>
+        </form>
+        <p class="ei-disclaimer">No spam. Unsubscribe anytime.</p>
+      </>
+    )}
+
+    {variant === 'discount' && (
+      <>
+        <h2 id="ei-title">{title}</h2>
+        <p>{desc}</p>
+        <a href={ctaUrl} class="ei-cta">{cta}</a>
+      </>
+    )}
+
+    {variant === 'live-chat-invite' && (
+      <>
+        <h2 id="ei-title">Need help finding the right product?</h2>
+        <p>Our experts are online. Get an answer in 60 seconds.</p>
+        <button class="ei-cta" onclick="window.$crisp && window.$crisp.push(['do', 'chat:open']);">
+          Start Chat
+        </button>
+      </>
+    )}
+  </div>
+</div>
+
+<script is:inline define:vars={{ coolDownDays, ctaUrl }}>
+  (function() {
+    const STORAGE_KEY = 'exitIntentLastShown';
+    const COOLDOWN_MS = coolDownDays * 24 * 60 * 60 * 1000;
+
+    const lastShown = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+    const now = Date.now();
+    if (now - lastShown < COOLDOWN_MS) return;  // 冷却期内,不弹
+
+    const modal = document.getElementById('exit-intent-modal');
+    const form = document.getElementById('ei-form');
+    const closeBtn = modal && modal.querySelector('.ei-close');
+
+    let shown = false;
+    function show() {
+      if (shown) return;
+      shown = true;
+      modal.hidden = false;
+      localStorage.setItem(STORAGE_KEY, String(now));
+      window.gtag && window.gtag('event', 'exit_intent_shown', {
+        event_category: 'engagement',
+        variant: '{variant}',
+      });
+    }
+    function hide() {
+      modal.hidden = true;
+    }
+
+    // 桌面: 鼠标移到顶部触发
+    if (window.matchMedia && !window.matchMedia('(max-width: 768px)').matches) {
+      document.addEventListener('mouseleave', (e) => {
+        if (e.clientY < 10 && !shown) show();
+      });
+    }
+
+    // 移动: scroll 后离开 tab
+    let scrolled = false;
+    window.addEventListener('scroll', () => { scrolled = true; });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && scrolled && !shown) show();
+    });
+
+    // 关闭事件
+    if (closeBtn) closeBtn.addEventListener('click', hide);
+    modal && modal.addEventListener('click', (e) => {
+      if (e.target === modal) hide();
+    });
+
+    // Form 提交
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = form.querySelector('[name=email]').value;
+        window.gtag && window.gtag('event', 'generate_lead', {
+          event_category: 'lead_magnet',
+          lead_magnet_type: 'exit-intent',
+        });
+        // 跳转到 Lead Magnet 下载页 (带 email + UTM)
+        const url = new URL(ctaUrl, window.location.origin);
+        url.searchParams.set('email', email);
+        url.searchParams.set('utm_source', 'exit-intent');
+        url.searchParams.set('utm_medium', 'modal');
+        window.location.href = url.toString();
+      });
+    }
+  })();
+</script>
+
+<style>
+  .ei-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .ei-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: eiSlideUp 0.3s ease-out;
+  }
+  @keyframes eiSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .ei-modal h2 { margin: 0 0 0.5rem; font-size: 1.5rem; color: #111; }
+  .ei-modal p { color: #555; margin: 0 0 1.5rem; }
+  .ei-close {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    background: none; border: none; font-size: 1.5rem;
+    cursor: pointer; color: #888;
+  }
+  .ei-close:hover { color: #111; }
+  #ei-form { display: flex; flex-direction: column; gap: 0.75rem; }
+  #ei-form input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .ei-cta {
+    background: var(--brand-primary, #0066ff);
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+  }
+  .ei-cta:hover { opacity: 0.9; }
+  .ei-disclaimer { font-size: 0.75rem; color: #888; margin: 0.75rem 0 0; }
+</style>
+</>
+)}

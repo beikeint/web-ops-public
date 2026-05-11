@@ -1,0 +1,185 @@
+---
+/**
+ * LeadMagnetModal · 通用 Lead Magnet 弹窗 (web-ops v10.1 batch 7)
+ *
+ * 配合 lead-magnet-automation skill 使用,3 大触发模式:
+ * - scroll: 访客滚动到页面 50% 时弹
+ * - timer: 停留 60 秒弹
+ * - intent: 鼠标移到顶部弹 (Exit-Intent 替代品,更柔和)
+ *
+ * Form ≤ 2 字段(email + 1),GA4 事件 generate_lead 自动埋点.
+ * 提交后自动接 inquiry email-nurture (web-ops-integration.md skill).
+ *
+ * 使用方式 (site.config.ts):
+ * features: { leadMagnetModal: true },
+ * leadMagnetModal: {
+ *   trigger: 'scroll',  // 'scroll' | 'timer' | 'intent'
+ *   triggerValue: 50,    // scroll: 百分比 / timer: 秒数 / intent: 不需要
+ *   title: '🎁 Free 2026 Industry Report',
+ *   desc: '20-page deep dive + 5 case studies',
+ *   ctaText: 'Download Free PDF',
+ *   pdfUrl: '/resources/industry-report.pdf',
+ *   coolDownDays: 7,  // 同访客 N 天内不再弹
+ *   utm: 'scroll-modal',  // 用于 UTM 追溯
+ * }
+ *
+ * 集成步骤:
+ * 1. 复制本文件到 src/components/interactive/LeadMagnetModal.astro
+ * 2. BaseLayout.astro 加: {config.features.leadMagnetModal && <LeadMagnetModal />}
+ * 3. site.config.ts 配 features.leadMagnetModal + leadMagnetModal 节
+ */
+import config from '../../config/site.config';
+
+const enabled = config.features?.leadMagnetModal;
+const trigger = config.leadMagnetModal?.trigger || 'scroll';
+const triggerValue = config.leadMagnetModal?.triggerValue || 50;
+const title = config.leadMagnetModal?.title || '🎁 Free Resource';
+const desc = config.leadMagnetModal?.desc || 'Industry insights + case studies';
+const ctaText = config.leadMagnetModal?.ctaText || 'Download Free PDF';
+const pdfUrl = config.leadMagnetModal?.pdfUrl || '/resources';
+const coolDownDays = config.leadMagnetModal?.coolDownDays || 7;
+const utm = config.leadMagnetModal?.utm || 'modal';
+---
+
+{enabled && (
+<>
+<div id="lm-modal" class="lm-overlay" hidden>
+  <div class="lm-modal" role="dialog" aria-labelledby="lm-title">
+    <button class="lm-close" aria-label="Close">×</button>
+    <h2 id="lm-title">{title}</h2>
+    <p>{desc}</p>
+    <form id="lm-form" data-magnet="lead-magnet-modal">
+      <input
+        type="email"
+        name="email"
+        placeholder="Your work email"
+        required
+        autocomplete="email"
+      />
+      <input
+        type="text"
+        name="firstName"
+        placeholder="First name (optional)"
+        autocomplete="given-name"
+      />
+      <button type="submit" class="lm-cta">{ctaText}</button>
+    </form>
+    <p class="lm-disclaimer">No spam. Unsubscribe anytime.</p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ trigger, triggerValue, coolDownDays, pdfUrl, utm }}>
+  (function() {
+    const STORAGE_KEY = 'leadMagnetModalLastShown';
+    const COOLDOWN_MS = coolDownDays * 24 * 60 * 60 * 1000;
+
+    const lastShown = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+    const now = Date.now();
+    if (now - lastShown < COOLDOWN_MS) return;
+
+    const modal = document.getElementById('lm-modal');
+    const form = document.getElementById('lm-form');
+    const closeBtn = modal.querySelector('.lm-close');
+
+    let shown = false;
+    function show() {
+      if (shown) return;
+      shown = true;
+      modal.hidden = false;
+      localStorage.setItem(STORAGE_KEY, String(now));
+      window.gtag && window.gtag('event', 'lead_magnet_modal_shown', {
+        event_category: 'engagement',
+        trigger,
+        utm,
+      });
+    }
+    function hide() { modal.hidden = true; }
+
+    // 触发器
+    if (trigger === 'scroll') {
+      window.addEventListener('scroll', () => {
+        const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        if (pct >= triggerValue && !shown) show();
+      });
+    } else if (trigger === 'timer') {
+      setTimeout(() => { if (!shown) show(); }, triggerValue * 1000);
+    } else if (trigger === 'intent') {
+      document.addEventListener('mouseleave', (e) => {
+        if (e.clientY < 10 && !shown) show();
+      });
+    }
+
+    closeBtn.addEventListener('click', hide);
+    modal.addEventListener('click', (e) => { if (e.target === modal) hide(); });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = form.querySelector('[name=email]').value;
+      const firstName = form.querySelector('[name=firstName]').value;
+      window.gtag && window.gtag('event', 'generate_lead', {
+        event_category: 'lead_magnet',
+        lead_magnet_type: 'modal',
+        utm,
+      });
+      const url = new URL(pdfUrl, window.location.origin);
+      url.searchParams.set('email', email);
+      if (firstName) url.searchParams.set('first_name', firstName);
+      url.searchParams.set('utm_source', 'lead-magnet-modal');
+      url.searchParams.set('utm_medium', 'popup');
+      url.searchParams.set('utm_campaign', utm);
+      window.location.href = url.toString();
+    });
+  })();
+</script>
+
+<style>
+  .lm-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .lm-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: lmSlideUp 0.3s ease-out;
+  }
+  @keyframes lmSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .lm-modal h2 { margin: 0 0 0.5rem; font-size: 1.5rem; color: #111; }
+  .lm-modal p { color: #555; margin: 0 0 1.5rem; }
+  .lm-close {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    background: none; border: none; font-size: 1.5rem;
+    cursor: pointer; color: #888;
+  }
+  .lm-close:hover { color: #111; }
+  #lm-form { display: flex; flex-direction: column; gap: 0.75rem; }
+  #lm-form input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .lm-cta {
+    background: var(--brand-primary, #0066ff);
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .lm-cta:hover { opacity: 0.9; }
+  .lm-disclaimer { font-size: 0.75rem; color: #888; margin: 0.75rem 0 0; }
+</style>
+</>
+)}

@@ -1,0 +1,44 @@
+---
+/**
+ * PostHogTracker · A/B 测试 + Feature Flag SDK 注入器 (web-ops v10.1 batch 7)
+ *
+ * 配合 集成模板/ab-testing/INSTALL.md 使用 (PostHog Self-host 推荐).
+ *
+ * 使用方式 (site.config.ts):
+ * features: { posthogAB: true },
+ * posthog: {
+ *   apiKey: 'phc_xxx',
+ *   host: 'https://posthog.<your-domain>.com',  // self-host
+ * }
+ *
+ * 集成步骤:
+ * 1. 复制本文件到 src/components/interactive/PostHogTracker.astro
+ * 2. BaseLayout.astro <head> 加: {config.features.posthogAB && <PostHogTracker />}
+ * 3. site.config.ts 配 features.posthogAB + posthog.apiKey + posthog.host
+ *
+ * Feature Flag 使用:
+ * ```astro
+ * ---
+ * // 服务端读取 flag
+ * const variant = posthog.getFeatureFlag('hero-cta-test') || 'control';
+ * const heroCta = variant === 'variant' ? 'Free Engineering Consult' : 'Get a Quote';
+ * ---
+ * <a onclick={`posthog.capture('hero_cta_click', {variant: '${variant}'})`}>
+ *   {heroCta}
+ * </a>
+ * ```
+ */
+import config from '../../config/site.config';
+
+const enabled = config.features?.posthogAB;
+const apiKey = config.posthog?.apiKey;
+const host = config.posthog?.host || 'https://app.posthog.com';
+---
+
+{enabled && apiKey && (
+  <script is:inline define:vars={{ apiKey, host }}>
+    /* PostHog A/B + Feature Flag (Self-host 推荐) */
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init(apiKey, { api_host: host, capture_pageview: true });
+  </script>
+)}

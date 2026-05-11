@@ -1,0 +1,365 @@
+{
+  "_meta": {
+    "version": "v1.4",
+    "createdAt": "2026-05-01",
+    "updatedAt": "2026-05-07",
+    "purpose": "顶级运营团队天花板能力的量化目标 + 缺口反向触发阈值。被 ceiling-kpi-scanner.mjs 读取，输出每日缺口报告，由 daily-cron / pm2-health-monitor 反向触发对应 cron。",
+    "linkedSpec": "智能体/运营/网站运营-web-ops/CLAUDE.md '六大能力域 + 成熟度评分' 段",
+    "v1.1Changes": "2026-05-07 加 contentQuality 维度（HCU/SpamBrain 反 AI 风险）+ pace 节奏阈值（v10.6）",
+    "v1.2Changes": "2026-05-07 加 businessOutcome + selfEvolution 维度（v11.0）",
+    "v1.3Changes": "2026-05-07 加 deepContentMonthly + pathCComplianceClient 维度（v11.0+1 Path C 战略）",
+    "v1.4Changes": "2026-05-07 加 productTier (standard/flagship) + distributionMonthly 维度（v12.0 2 档代运营产品 + 社媒裂变纳入产品）"
+  },
+
+  "productTiers": {
+    "standard": {
+      "label": "标准档（90% 客户默认）",
+      "monthlyFee": "¥10000-20000",
+      "targetCustomers": "中小 B2B 工厂 / 出海 1-3 年",
+      "deliverables": {
+        "websiteOps": "每周 1-2 篇基础博客 + 站点巡检 + SSL/索引",
+        "deepBlog": "每月 1 篇深度博客（2500-5000 字）",
+        "socialChannel": "1 渠道选择 (LinkedIn 公司页 / 微信公众号 / 小红书)",
+        "socialPostsPerMonth": "5-10 个二级内容（content-distribution 派生）",
+        "businessReport": "GSC + GA4 月度报告"
+      },
+      "clientConfig": {
+        "monthlyTimeRequired": "30-60 分钟",
+        "resources": "3 数据点 + 1 案例 + 1 专家 quote + 3 工厂照"
+      },
+      "sixMonthGoal": {
+        "scoreTarget": 90,
+        "inquiriesPerMonth": "10-15"
+      },
+      "capacity": "30+ 客户/智能体"
+    },
+    "flagship": {
+      "label": "旗舰档（行业头部 / 长期 IP）",
+      "monthlyFee": "¥50000-100000",
+      "targetCustomers": "行业 Top 5-10 / 出海 3+ 年 / 想做行业 KOL",
+      "deliverables": {
+        "websiteOps": "标准档全部",
+        "deepBlog": "每月 1 篇 + 季度 1 篇白皮书",
+        "personalIP": "客户老板/工程师 LinkedIn 个人 IP 打造（2-3 帖/周）",
+        "fullSocialChannels": "LinkedIn + YouTube + Twitter + 微信 + 小红书 + 知乎 6 渠道",
+        "socialPostsPerMonth": "30-50 个二级内容",
+        "aiKnowledgeSource": "Wikidata 实体 + Google Knowledge Graph + AI 搜索引用",
+        "industryRelations": "月度 1 次行业大佬采访 quote + HARO 真账号 5-10 条/周",
+        "executiveSupport": "行业大会演讲 PPT + 数据支持"
+      },
+      "clientConfig": {
+        "weeklyTimeRequired": "2-3 小时（运营人员深度参与）",
+        "resources": "标准档全部 + 老板每周 30 分钟视频访谈 + 工厂开放采访"
+      },
+      "twelveMonthGoal": {
+        "scoreTarget": 95,
+        "inquiriesPerMonth": "30+",
+        "linkedInFollowers": "5000-20000",
+        "wikidataEntity": true,
+        "googleKnowledgeGraph": true
+      },
+      "capacity": "3-5 客户/智能体"
+    }
+  },
+
+  "domains": {
+    "technicalSEO": {
+      "label": "Technical SEO",
+      "_note": "由日常巡检 + Schema 修补 + IndexNow 已覆盖, 不单独追踪缺口",
+      "trackingMode": "passive",
+      "weeklyMin": null,
+      "monthlyMin": null
+    },
+    "contentStrategy": {
+      "label": "Content Strategy",
+      "trackingMode": "active",
+      "weekly": {
+        "perClient": 2,
+        "_note": "v10 硬要求: 每客户每周 ≥2 篇博客 (含 refresh 算 1 篇)"
+      },
+      "commitPatterns": [
+        "^feat\\(blog\\)",
+        "^feat\\(content\\)",
+        "^content:\\s*发布博客",
+        "^content:\\s*\\[blog\\]",
+        "^feat\\(refresh\\)",
+        "^refresh:.*博客"
+      ],
+      "filePatterns": [
+        "src/content/blog/.*\\.md$",
+        "src/content/blog/.*\\.mdx$",
+        "src/data/blog-posts\\.ts"
+      ]
+    },
+    "linkBuilding": {
+      "label": "Link Building / Digital PR / HARO",
+      "trackingMode": "active",
+      "weekly": {
+        "global": 35,
+        "_note": "目标 5/天 × 7 天 = 35 草稿, 跨客户合计 (HARO 草稿不分客户)"
+      },
+      "fileGlobs": [
+        "docs/haro-drafts/*.md",
+        "docs/digital-pr/*.md"
+      ],
+      "commitPatterns": [
+        "feat\\(haro\\)",
+        "feat\\(digital-pr\\)",
+        "HARO",
+        "Qwoted"
+      ]
+    },
+    "geoAttack": {
+      "label": "AI/GEO 攻占",
+      "trackingMode": "active",
+      "monthly": {
+        "perClient": 1,
+        "_note": "v10 硬要求: 每客户每月 ≥1 个 GEO 攻占改动. v10.5+1 (5-01) 扩展含 AI 实体识别 schema (author Person/sameAs / FAQPage JSON-LD) — 5-01 实跑发现这类 commit 也是真 GEO 强化, 但旧 patterns 没匹配上"
+      },
+      "commitPatterns": [
+        "feat\\(geo\\)",
+        "^geo:",
+        "GEO 攻占",
+        "答案胶囊",
+        "AI 引用",
+        "AI 搜索实体",
+        "AI 实体识别",
+        "实体识别",
+        "geo-attack",
+        "feat\\(schema\\).*author",
+        "feat\\(schema\\).*sameAs",
+        "feat\\(schema\\).*Person",
+        "feat\\(schema\\).*FAQPage",
+        "feat\\(schema\\).*HowTo",
+        "FAQPage JSON-LD",
+        "Person schema sameAs",
+        "权威外链",
+        "Authority Signal"
+      ]
+    },
+    "croExperiment": {
+      "label": "CRO 转化率优化",
+      "trackingMode": "active",
+      "monthly": {
+        "perClient": 1,
+        "_note": "v10 硬要求: 每客户每月 ≥1 个新 CRO 实验 (cro-experiments.json registered)"
+      },
+      "fileGlobs": [
+        "docs/cro-experiments.json",
+        "website/docs/cro-experiments.json"
+      ],
+      "commitPatterns": [
+        "feat\\(cro\\)",
+        "cro:.*\\bregister\\b",
+        "CRO 实验"
+      ]
+    },
+    "analyticsDeep": {
+      "label": "深度归因 Analytics (Looker / Cohort / DDA)",
+      "trackingMode": "active",
+      "monthly": {
+        "perClient": 1,
+        "_note": "v10 硬要求: 每客户每月 ≥1 次 Looker dashboard 更新 / Cohort 分析 / DDA 配置"
+      },
+      "fileGlobs": [
+        "docs/analytics-monthly/*.md",
+        "docs/looker-*.md",
+        "docs/cohort-*.md"
+      ],
+      "commitPatterns": [
+        "feat\\(analytics\\)",
+        "feat\\(looker\\)",
+        "feat\\(cohort\\)",
+        "Looker",
+        "Cohort"
+      ]
+    },
+
+    "contentQuality": {
+      "label": "内容质量 (HCU + SpamBrain 反 AI 风险)",
+      "trackingMode": "active",
+      "scope": "perClient",
+      "weekly": {
+        "perClient": 1,
+        "_note": "v10.6 (2026-05-07): 每客户每周 ≥1 次质量门禁通过 (pre-deploy-quality-check.sh 通过 = 1, 失败 = 0). 来源：跨 4 客户审计发现 67/100 警示档"
+      },
+      "scanner": {
+        "command": "bash 智能体/运营/网站运营-web-ops/scripts/pre-deploy-quality-check.sh <客户站根>",
+        "passingExitCode": 0,
+        "_note": "exit code 0 = 6/6 门禁全过 / 非 0 = 失败门禁数"
+      },
+      "qualityScoreMin": 70,
+      "qualityScoreMinIdeal": 85,
+      "_thresholdNote": "70 = 顶级团队入门 / 85 = 顶级团队稳定输出 (来自 2026-05-07 跨 4 客户审计基准)"
+    },
+
+    "pacingDiscipline": {
+      "label": "B2B 节奏纪律 (反 SpamBrain 大规模产出)",
+      "trackingMode": "passive_alert",
+      "scope": "perClient",
+      "thresholds": {
+        "weeklyMax": 3,
+        "monthlyMax": 8,
+        "_note": "v10.6 硬上限. 超出即 weekly-blog-trigger 自动熔断 + ceiling 推 P0. 单篇质量再好, 节奏一旦超 SpamBrain 模式识别 = 整站受罚"
+      },
+      "_origin": "2026-05-07 Demo-D 11 天 90 篇 (15 × 6 语种) 案例驱动"
+    },
+
+    "businessOutcome": {
+      "label": "业务结果（流量 → 询盘 → 成单）",
+      "trackingMode": "active",
+      "scope": "perClient",
+      "monthly": {
+        "perClient": {
+          "gscImpressionsGrowth": 0.10,
+          "gscClicksGrowth": 0.15,
+          "ga4ConversionsGrowth": 0.10,
+          "_note": "v11.0 (2026-05-07): 真业务结果 KPI — 月度 GSC 展示 +10% / 点击 +15% / GA4 conversions +10% 是顶级代理基准. 发酵期客户阈值减半 (5%/8%/5%)"
+        }
+      },
+      "tracker": {
+        "command": "node 智能体/运营/网站运营-web-ops/scripts/business-outcome-tracker.mjs",
+        "schedule": "每月 1 号 14:00 (monthly-ceiling 后 5h)",
+        "output": "案例库/月度业务结果/YYYY-MM-{客户}.md"
+      },
+      "_origin": "v11.0 (2026-05-07) 顶级诊断发现 KPI 跟产出不跟业务结果 — demo-b 4-22→4-25 GSC +2360% 这种真账没系统化追踪",
+      "_yearGoal": "v11.4 (6 月内): 4 客户加权月度 GSC clicks 增长 ≥ 15% / 询盘归因 ≥ 5/月 / 成单 ≥ 1/季度"
+    },
+
+    "distributionMonthly": {
+      "label": "v12.0 月度社媒裂变（标准档 1 渠道 / 旗舰档 6 渠道）",
+      "trackingMode": "active",
+      "scope": "perClient",
+      "monthly": {
+        "standard": {
+          "secondaryContentMin": 5,
+          "channelsActive": 1,
+          "_note": "标准档客户每月深度博客必须派生 ≥ 5 个二级社媒内容到选定 1 渠道 (LinkedIn 公司页 / 微信公众号 / 小红书 三选一)"
+        },
+        "flagship": {
+          "secondaryContentMin": 30,
+          "channelsActive": 6,
+          "personalIPPostsMin": 8,
+          "_note": "旗舰档客户每月深度博客必须派生 ≥ 30 个二级内容到 6 渠道 + 老板个人 LinkedIn ≥ 8 帖"
+        }
+      },
+      "scanner": {
+        "command": "扫 客户/<X>/website/docs/social-distribution/YYYY-MM/ 下二级内容数 + 各渠道发布记录",
+        "schedule": "每月 1 号 14:00"
+      },
+      "_origin": "v12.0 (2026-05-07) 运营人员确认 2 档代运营产品 + 社媒纳入. 1 篇深度博客 → 30-50 个二级内容裂变 = 顶级代理做不到的内容资产复利.",
+      "_skill": ".claude/skills/content-distribution.md"
+    },
+
+    "selfEvolution": {
+      "label": "自我进化机制健康度",
+      "trackingMode": "active",
+      "scope": "global",
+      "weekly": {
+        "global": 80,
+        "_note": "v11.0 (2026-05-07): weekly-self-audit 每周日跑, 元规则健康度 ≥ 80/100 = 健康. <80 = 反模式重犯严重, 升级硬规则"
+      },
+      "scanner": {
+        "command": "node 智能体/运营/网站运营-web-ops/scripts/weekly-self-audit.mjs",
+        "schedule": "每周日 18:00",
+        "output": "案例库/周自审/YYYY-WXX.md"
+      },
+      "_origin": "v11.0 (2026-05-07) memory 33 条中 25% 是同主题反复教训 → 顶级 vs 中等分水岭"
+    },
+
+    "deepContentMonthly": {
+      "label": "Path C 月度 90+ 顶级深度博客",
+      "trackingMode": "active",
+      "scope": "perClient",
+      "monthly": {
+        "perClient": 1,
+        "_note": "v11.0+1 (2026-05-07): Path C 战略硬指标. 每客户每月 ≥ 1 篇 90+ 深度博客 (2500-5000字 + 5 第一手数据 + 真客户案例 + 内部专家 quote + 3 张原创配图). 必须基于 client-data-collection 资源包启动."
+      },
+      "qualityScoreMin": 90,
+      "_thresholdNote": "90 = 行业前 1% (Brian Dean / Eli Schwartz / Animalz 级). 60-79 = 中等代理 / 80-89 = 顶级代理入门 / 90+ = 真行业 standard",
+      "scanner": {
+        "command": "扫 客户/<X>/website/src/data/blog-posts.ts 内 templateType: 'pillar' OR 'case-study' 且 fields 全 (author/authorUrl/authorTitle/authorBio + 第一手数据数 ≥ 5 + 客户案例 ≥ 1 + 专家 quote ≥ 1 + 配图 ≥ 3)",
+        "schedule": "每月 1 号 14:00 (跟随 business-outcome-tracker)"
+      },
+      "blocker": "client-data-collection 资源包(4 类资源缺任一 = abort)",
+      "_origin": "v11.0+1 (2026-05-07) 运营人员确认 Path C 战略 — '目标导向, 客户配合是产品强制要求不是恳求'",
+      "_yearGoal": "v11.4 (6 月内): 4 客户每月各 1 篇 90+ 深度博客 = 48 篇/年顶级内容 / 平均带询盘 ≥ 5/月/篇"
+    },
+
+    "pathCComplianceClient": {
+      "label": "Path C 客户配合度",
+      "trackingMode": "passive_alert",
+      "scope": "perClient",
+      "monthly": {
+        "perClient": {
+          "operationalDataPoints": 3,
+          "customerCase": 1,
+          "expertQuote": 1,
+          "originalVisuals": 3
+        }
+      },
+      "alertThreshold": "连续 3 月不配合 → P0 升级议题给运营人员 (调整服务模式 / 价格 / 终止)",
+      "_origin": "v11.0+1 (2026-05-07) Path C 战略 — 客户深度参与是产品强制要求, 非恳求"
+    }
+  },
+
+  "thresholds": {
+    "weekly": {
+      "criticalProgress": 0.5,
+      "weekHalfDay": 4,
+      "_note": "本周第 4 天起 (周四), 进度 < 50% → 🔴 critical, 缺口反向触发对应 cron"
+    },
+    "monthly": {
+      "criticalProgress": 0.5,
+      "monthHalfDay": 15,
+      "_note": "本月 15 号起, 进度 < 50% → 🔴 critical, 缺口反向触发对应 cron"
+    },
+    "alertSeverity": {
+      "info":     "进度 ≥ 70%",
+      "warning":  "进度 50-70%",
+      "critical": "进度 < 50% 且过半"
+    }
+  },
+
+  "selfHeal": {
+    "blog": {
+      "trigger": "weekly progress < 50% AND dow >= 4",
+      "action": "spawn weekly-blog-trigger.mjs --force --client <X>",
+      "cooldownHours": 24,
+      "_note": "周四后博客欠 → 直接触发 weekly-blog (不等到下周三)"
+    },
+    "haro": {
+      "trigger": "weekly global progress < 30% AND dow >= 3",
+      "action": "spawn haro-batch-generator.mjs --count 10",
+      "cooldownHours": 24
+    },
+    "geo": {
+      "trigger": "monthly progress < 50% AND dom >= 15",
+      "action": "spawn geo-attack-trigger.mjs --client <X>",
+      "cooldownHours": 168,
+      "_note": "一周内只触发一次 (避免重复跑)"
+    },
+    "cro": {
+      "trigger": "monthly progress < 50% AND dom >= 15",
+      "action": "spawn cro-experiment-trigger.mjs --client <X>",
+      "cooldownHours": 168
+    },
+    "looker": {
+      "trigger": "monthly progress < 100% AND dom >= 25",
+      "action": "spawn looker-monthly-trigger.mjs --client <X>",
+      "cooldownHours": 168
+    },
+    "contentQuality": {
+      "trigger": "weekly pre-deploy-quality-check fails OR weekly score < 70",
+      "action": "spawn quality-fix-trigger.mjs --client <X> --gates <#fail#>",
+      "cooldownHours": 24,
+      "_note": "v10.6 (2026-05-07): 质量门禁失败时反向触发整改 trigger (待新增). 当前由 pre-deploy-quality-check 阻断 deploy 即足够, trigger 留 P1"
+    },
+    "pacingViolation": {
+      "trigger": "weeklyBlogCount >= 3 OR monthlyBlogCount >= 8",
+      "action": "weekly-blog-trigger.mjs 自动熔断 + 企微 P0 推送",
+      "cooldownHours": 168,
+      "_note": "v10.6 (2026-05-07): 已在 weekly-blog-trigger.mjs 内置熔断, 此处仅声明 KPI 联动"
+    }
+  }
+}

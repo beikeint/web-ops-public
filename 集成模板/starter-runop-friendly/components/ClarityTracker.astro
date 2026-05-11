@@ -1,0 +1,33 @@
+---
+/**
+ * ClarityTracker · Microsoft Clarity Heatmap 注入器 (web-ops v10.1 batch 7)
+ *
+ * 配合 集成模板/clarity-heatmap/INSTALL.md 使用,无配置即跳过.
+ *
+ * 使用方式 (site.config.ts):
+ * features: { clarityHeatmap: true },
+ * clarity: { projectId: 'YOUR_CLARITY_PROJECT_ID' }
+ *
+ * 集成步骤:
+ * 1. 复制本文件到 src/components/interactive/ClarityTracker.astro
+ * 2. BaseLayout.astro <head> 加: {config.features.clarityHeatmap && <ClarityTracker />}
+ * 3. site.config.ts 配 features.clarityHeatmap + clarity.projectId
+ *
+ * 数据 GA4 自动归因 (在 Clarity 控制台 Settings → Connect Google Analytics).
+ */
+import config from '../../config/site.config';
+
+const enabled = config.features?.clarityHeatmap;
+const projectId = config.clarity?.projectId;
+---
+
+{enabled && projectId && (
+  <script is:inline define:vars={{ projectId }}>
+    /* Microsoft Clarity - free unlimited heatmap + session replay */
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", projectId);
+  </script>
+)}
