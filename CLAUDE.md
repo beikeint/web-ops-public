@@ -460,8 +460,8 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 |---|---|---|---|---|
 | client-A | Demo-D | demo-a.com | astro | 🟢 active（4-27 域名搬迁后启动运营） |
 | client-A-eastragonltd | Demo-DEASTRAGON老站 | eastragonltd.com | **wordpress** | 🟢 active（2026-04-30 接入 · 走 wp-site-ops 轻巡检） |
-| client-B | Demo-C | demo-c.com | astro | 🟢 active（双站 a） |
-| client-B2 | Demo-A | demo-a.com | astro | 🟢 active（双站 b） |
+| ~~client-B~~ | ~~Demo-C~~ | ~~demo-c.com~~ | ~~astro~~ | ✅ **handover_complete**（2026-05-14 当日完整移交客户自营，**取消原 60 天双轨期**，daily-cron 已移除。移交包：[`客户档案/002/移交包-2026-05-14/`](../../../客户档案/002/移交包-2026-05-14/)） |
+| ~~client-B2~~ | ~~Demo-A~~ | ~~demo-a.com~~ | ~~astro~~ | ✅ **handover_complete**（同上，双站一并移交） |
 | client-D | Demo-B | demo-b.com | astro | 🟢 active（4-25 多语种部署 → 展示 ↑2360%） |
 
 **WordPress 站特殊规则**（client-A-eastragonltd 等）：
@@ -470,6 +470,15 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 - 智能体角色 = 数据采集 + 健康监控 + 待办清单输出器（不登 WP 后台改设置 / 不批量更新插件 / 不动 .htaccess / 不动 wp-config / 不动数据库内容）
 - A 级 commit KPI 不适用，本站每日产出衡量按"日报评分 ≥ 80 + 给客户/运营人员的可执行建议数 ≥ 3"
 - 内容/Title/Schema 改动建议输出到日报"建议您操作"段，由运营人员/客户在 Rank Math 等 WP 后台执行
+
+**migrating 阶段特殊规则**（2026-05-14 立，客户B 双站启动）：
+
+- daily-cron 仍跑（仍主运营，仍 push + 部署 + IndexNow），但 prompt 注入 `migratingNote` 改"对账模式"
+- **客户群日报由客户智能体发**（避免双份），我方只产**内部日报**写盘到 `reports/internal-briefing-<id>-<date>.md`，不落客户 docs 目录
+- 仍计 A 级 commit + 月度天花板评分
+- 客户群反馈仍由我方主响应
+- 双站差异硬约束（demo-c Pure Manufacturer / demo-a Solution Integrator，i18n 第一/三人称不混用，详见 [移交包/资产清单.md](../../../客户档案/002/移交包-2026-05-14/资产清单.md)）
+- Day 60 终点 = 2026-07-14：到期当天从 `WEB_OPS_CLIENTS` 移除 + 本表移除 + .env 删 3 个 `DEPLOY_CLIENT_002_*` key + GSC/GA4 撤权（完整 checklist 见 [移交包/双轨期SOP.md](../../../客户档案/002/移交包-2026-05-14/双轨期SOP.md) 第五节）
 
 **不归 web-ops 管的客户**（避免越界 + 避免遗忘）：
 
@@ -481,6 +490,7 @@ A 级 commit 识别正则：`feat\((blog|ctr|refresh|internal-link|schema|indexn
 - daily-cron.mjs 的 `WEB_OPS_CLIENTS` 数组与本表**强一致**（一处改两处同步）
 - 接到任务先查此表 → 客户不在表里 → 先问"是要把它纳入运营吗？" 再确认归属
 - 客户从"暂未上线"转为"active" → 必须同时改这两处（daily-cron + 本表）+ 写 timeline
+- 客户从 active → migrating（移交过渡期）→ handover_complete（完全移交）→ 各阶段同步两处 + 写 timeline + 写移交包文档
 - 一个客户 30 天没动作 → 月度 health-check 要把"客户被遗忘"标 P1 异常
 
 **核心原则**：

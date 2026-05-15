@@ -78,7 +78,7 @@
         "_note": "v10 硬要求: 每客户每周 ≥2 篇博客 (含 refresh 算 1 篇)"
       },
       "commitPatterns": [
-        "^feat\\(blog\\)",
+        "^feat\\(blog",
         "^feat\\(content\\)",
         "^content:\\s*发布博客",
         "^content:\\s*\\[blog\\]",
